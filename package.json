@@ -1,7 +1,7 @@
 {
   "name": "meanie-mail-composer",
   "description": "A simple library to help you compose emails using the Handlebars templating engine, for use with Meanie Express Seed projects",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/meanie/mail-composer",
   "author": {
     "name": "Adam Reis",
