@@ -190,6 +190,31 @@ User
 
 For a working example, see the [Meanie Express Seed](https://github.com/meanie/express-seed) project.
 
+## Randomization of HTML content
+A helper is included to append a random string to HTML email contents to prevent GMail
+from breaking up your emails by quoting and hiding parts of repeating content. This works
+by including a hidden span with random characters for each email before the ending of certain tags, e.g. `</p>`.
+
+Manual usage:
+
+```js
+let html = '<p>Copyright 2017 My Company</p>';
+html = composer.randomize(html, '</p>');
+console.log(html);
+//<p>Copyright 2017 My Company<span style="display: none !important;">ab4f2</span></p>
+```
+
+Automatic usage via config:
+
+```js
+composer.config({
+  templateHtml: '/path/to/template.hbs',
+  templateText: '/path/to/template.txt',
+  autoRandomize: true,
+  randomizeTag: '</p>', //Default value, can be omitted
+});
+```
+
 ## Issues & feature requests
 
 Please report any bugs, issues, suggestions and feature requests in the [meanie-mail-composer issue tracker](https://github.com/meanie/mail-composer/issues).

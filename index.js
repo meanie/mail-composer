@@ -3,6 +3,7 @@
 /**
  * Dependencies
  */
+const crypto = require('crypto');
 const handlebars = require('handlebars');
 const loadPartial = require('./lib/load-partial');
 const Email = require('./lib/email');
@@ -14,12 +15,14 @@ const config = {
   templateText: '',
   templateHtml: '',
   partialString: '{{partial}}',
+  autoRandomize: false,
+  randomizeTag: '</p>',
 };
 
 /**
  * Composer interface
  */
-module.exports = {
+const composer = module.exports = {
 
   /**
    * Expose email base class for modification
@@ -60,6 +63,11 @@ module.exports = {
         html = handlebars.compile(html)(data);
         text = handlebars.compile(text)(data);
 
+        //Auto randomize if needed
+        if (config.autoRandomize) {
+          html = composer.randomize(html, config.randomizeTag);
+        }
+
         //Set html/text
         email.setHtml(html);
         email.setText(text);
@@ -67,5 +75,29 @@ module.exports = {
         //Resolve with email
         return email;
       });
+  },
+
+  /**
+   * Helper to append random string to HTML email contents to prevent GMail
+   * from breaking up your emails and hiding parts of repeating content.
+   * This works by including a hidden span with random characters for each
+   * email before the ending of certain tags, e.g. </p>
+   */
+  randomize(html, tag = '</p>') {
+
+    //Create a 5 char random string for email content to be unique
+    const time = String(Date.now());
+    const hash = crypto
+      .createHash('md5')
+      .update(time)
+      .digest('hex')
+      .substr(0, 5);
+
+    //Create HTML string to replace with and regex
+    const str = `<span style="display: none !important;">${hash}</span>${tag}`;
+    const regex = new RegExp(tag, 'g');
+
+    //Replace in HTML
+    return html.replace(regex, str);
   },
 };
