@@ -211,7 +211,7 @@ composer.config({
   templateHtml: '/path/to/template.hbs',
   templateText: '/path/to/template.txt',
   autoRandomize: true,
-  randomizeTag: '</p>', //Default value, can be omitted
+  randomizeTags: 'p h1',
 });
 ```
 

@@ -16,7 +16,7 @@ const config = {
   templateHtml: '',
   partialString: '{{partial}}',
   autoRandomize: false,
-  randomizeTag: '</p>',
+  randomizeTags: 'p h1',
 };
 
 /**
@@ -65,7 +65,7 @@ const composer = module.exports = {
 
         //Auto randomize if needed
         if (config.autoRandomize) {
-          html = composer.randomize(html, config.randomizeTag);
+          html = composer.randomize(html, config.randomizeTags);
         }
 
         //Set html/text
@@ -83,7 +83,12 @@ const composer = module.exports = {
    * This works by including a hidden span with random characters for each
    * email before the ending of certain tags, e.g. </p>
    */
-  randomize(html, tag = '</p>') {
+  randomize(html, tags = 'p h1') {
+
+    //Turn tags into array
+    if (!Array.isArray(tags)) {
+      tags = tags.split(' ');
+    }
 
     //Create a 5 char random string for email content to be unique
     const time = String(Date.now());
@@ -93,11 +98,18 @@ const composer = module.exports = {
       .digest('hex')
       .substr(0, 5);
 
-    //Create HTML string to replace with and regex
-    const str = `<span style="display: none !important;">${hash}</span>${tag}`;
-    const regex = new RegExp(tag, 'g');
+    //Replace all tags
+    return tags.reduce((html, tag) => {
 
-    //Replace in HTML
-    return html.replace(regex, str);
+      //Create ending tag
+      tag = `</${tag}>`;
+
+      //Create HTML string to replace with and regex
+      const str = `<span style="display: none !important">${hash}</span>${tag}`;
+      const regex = new RegExp(tag, 'g');
+
+      //Replace in HTML
+      return html.replace(regex, str);
+    }, html);
   },
 };
