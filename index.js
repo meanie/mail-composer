@@ -42,7 +42,7 @@ const composer = module.exports = {
   compose(mail, data) {
 
     //Extract mail data
-    const {from, to, html, text} = mail;
+    const {from, to, html, text, replyTo} = mail;
 
     //Compile subject
     const subject = handlebars.compile(mail.subject)(data);
@@ -50,6 +50,11 @@ const composer = module.exports = {
     //Initialize email and get partial string
     const email = new Email(from, to, subject);
     const str = config.partialString;
+
+    //Reply to
+    if (replyTo) {
+      email.setReplyTo(replyTo);
+    }
 
     //Load partials
     return Promise
