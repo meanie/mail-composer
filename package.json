@@ -26,7 +26,7 @@
     "sendgrid"
   ],
   "engines": {
-    "node": "^7.2.1"
+    "node": ">=7.2.1"
   },
   "main": "index.js",
   "scripts": {
