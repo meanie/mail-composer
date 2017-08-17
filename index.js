@@ -16,7 +16,7 @@ const config = {
   templateHtml: '',
   partialString: '{{partial}}',
   autoRandomize: false,
-  randomizeTags: 'p h1',
+  randomizeTags: 'p',
 };
 
 /**
@@ -41,20 +41,13 @@ const composer = module.exports = {
    */
   compose(mail, data) {
 
-    //Extract mail data
-    const {from, to, html, text, replyTo} = mail;
+    //Extract basic mail data and create new email instance
+    const {html, text, subject} = mail;
+    const {partialString: str} = config;
+    const email = new Email(mail);
 
     //Compile subject
-    const subject = handlebars.compile(mail.subject)(data);
-
-    //Initialize email and get partial string
-    const email = new Email(from, to, subject);
-    const str = config.partialString;
-
-    //Reply to
-    if (replyTo) {
-      email.setReplyTo(replyTo);
-    }
+    email.subject = handlebars.compile(subject)(data);
 
     //Load partials
     return Promise
@@ -74,11 +67,10 @@ const composer = module.exports = {
         }
 
         //Set html/text
-        email.setHtml(html);
-        email.setText(text);
+        Object.assign(email, {html, text});
 
-        //Resolve with email
-        return email;
+        //Resolve with mail data
+        return mail;
       });
   },
 
@@ -88,7 +80,7 @@ const composer = module.exports = {
    * This works by including a hidden span with random characters for each
    * email before the ending of certain tags, e.g. </p>
    */
-  randomize(html, tags = 'p h1') {
+  randomize(html, tags = 'p') {
 
     //Turn tags into array
     if (!Array.isArray(tags)) {

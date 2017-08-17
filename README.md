@@ -57,9 +57,12 @@ composer.config({
 });
 ```
 
-Then use it to compose an email message and send it with a compatible mailer, for example [sendgrid-mailer](https://www.npmjs.com/package/sendgrid-mailer):
+Then use it to compose an email message and send it with a compatible mailer, for example [@sendgrid/mail](https://www.npmjs.com/package/@sendgrid/mail):
 
 ```js
+//Load mailer
+const sgMail = require('@sendgrid/mail');
+
 //Prepare mail data
 const mail = {
   to: user.email,
@@ -75,11 +78,11 @@ const data = {app, user};
 //Compose and send the email
 composer
   .compose(mail, data)
-  .then(email => mailer.send(email));
+  .then(email => sgMail.send(email));
 ```
 
 ## Advanced usage
-For more advanced cases where you need to manage locals for your templates or want to extend the `Email` class with additional functionality, it is recommended to writ a wrapper service around the composer, e.g.:
+For more advanced cases where you need to manage locals for your templates, it is recommended to write a wrapper service around the composer, e.g.:
 
 ```js
 'use strict';
@@ -89,42 +92,33 @@ For more advanced cases where you need to manage locals for your templates or wa
  */
 const moment = require('moment');
 const composer = require('meanie-mail-composer');
-const sendgrid = require('sendgrid-mailer');
+const sgMail = require('@sendgrid/mail');
 
 /**
  * Configure sendgrid mailer and composer
  */
-sendgrid.config('SENDGRID_API_KEY');
+sgMail.setApiKey('YOUR_SENDGRID_API_KEY');
 composer.config({
   templateHtml: '/path/to/template.hbs',
   templateText: '/path/to/template.txt',
 });
 
 /**
- * Append send shortcut method to email prototype
- */
-composer.Email.prototype.send = function() {
-  return sendgrid.send(this);
-};
-
-/**
  * Create locals for email templates
  */
 function createLocals(context) {
+  const {title, version} = context.app.locals;
   return {
     now: moment(),
     user: context.user,
-    app: {
-      title: context.app.locals.title,
-      version: context.app.locals.version,
-    },
+    app: {title, version},
   };
 }
 
 /**
  * Export mailer interface
  */
-const mailer = module.exports = {
+module.exports = {
 
   /**
    * Create an email
@@ -147,7 +141,8 @@ const mailer = module.exports = {
    * Send one or more emails
    */
   send(emails) {
-    return sendgrid.send(emails);
+    return sgMail
+      .sendMultiple(emails);
   },
 };
 ```
@@ -188,7 +183,7 @@ User
   .then(email => email.send());
 ```
 
-For a working example, see the [Meanie Express Seed](https://github.com/meanie/express-seed) project.
+For working examples, see the [Meanie Express Seed](https://github.com/meanie/express-seed) project.
 
 ## Randomization of HTML content
 A helper is included to append a random string to HTML email contents to prevent GMail
@@ -211,7 +206,7 @@ composer.config({
   templateHtml: '/path/to/template.hbs',
   templateText: '/path/to/template.txt',
   autoRandomize: true,
-  randomizeTags: 'p h1',
+  randomizeTags: 'p',
 });
 ```
 
