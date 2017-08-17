@@ -69,8 +69,8 @@ const composer = module.exports = {
         //Set html/text
         Object.assign(email, {html, text});
 
-        //Resolve with mail data
-        return mail;
+        //Resolve with email
+        return email;
       });
   },
 
