@@ -37,6 +37,13 @@ const composer = module.exports = {
   },
 
   /**
+   * Compile with handlebars
+   */
+  compile(contents, data) {
+    return handlebars.compile(contents)(data);
+  },
+
+  /**
    * Compose an email
    */
   compose(mail, data) {
@@ -47,7 +54,7 @@ const composer = module.exports = {
     const email = new Email(mail);
 
     //Compile subject
-    email.subject = handlebars.compile(subject)(data);
+    email.subject = composer.compile(subject, data);
 
     //Load partials
     return Promise
@@ -58,8 +65,8 @@ const composer = module.exports = {
       .then(([html, text]) => {
 
         //Compile HTML and text
-        html = handlebars.compile(html)(data);
-        text = handlebars.compile(text)(data);
+        html = composer.compile(html, data);
+        text = composer.compile(text, data);
 
         //Auto randomize if needed
         if (config.autoRandomize) {
