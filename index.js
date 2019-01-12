@@ -46,11 +46,13 @@ const composer = module.exports = {
   /**
    * Compose an email
    */
-  compose(mail, data) {
+  compose(mail, data, options) {
+
+    //Merge options with default settings
+    options = Object.assign({}, config, options || {});
 
     //Extract basic mail data and create new email instance
     const {html, text, subject} = mail;
-    const {partialString: str} = config;
     const email = new Email(mail);
 
     //Compile subject
@@ -59,8 +61,8 @@ const composer = module.exports = {
     //Load partials
     return Promise
       .all([
-        loadPartial(config.templateHtml, html, str),
-        loadPartial(config.templateText, text, str),
+        loadPartial(options.templateHtml, html, options.partialString),
+        loadPartial(options.templateText, text, options.partialString),
       ])
       .then(([html, text]) => {
 
@@ -69,8 +71,8 @@ const composer = module.exports = {
         text = composer.compile(text, data);
 
         //Auto randomize if needed
-        if (config.autoRandomize) {
-          html = composer.randomize(html, config.randomizeTags);
+        if (options.autoRandomize) {
+          html = composer.randomize(html, options.randomizeTags);
         }
 
         //Set html/text
