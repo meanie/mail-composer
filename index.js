@@ -9,9 +9,9 @@ const loadPartial = require('./lib/load-partial');
 const Email = require('./lib/email');
 
 /**
- * Config object
+ * Defaults
  */
-const config = {
+const defaults = {
   templateText: '',
   templateHtml: '',
   partialString: '{{partial}}',
@@ -30,10 +30,10 @@ const composer = module.exports = {
   Email,
 
   /**
-   * Configure
+   * Configure defaults
    */
   config(options) {
-    Object.assign(config, options || {});
+    Object.assign(defaults, options || {});
   },
 
   /**
@@ -46,7 +46,10 @@ const composer = module.exports = {
   /**
    * Compose an email
    */
-  compose(mail, data) {
+  compose(mail, data, options) {
+
+    //Create config
+    const config = Object.assign({}, defaults, options || {});
 
     //Extract basic mail data and create new email instance
     const {html, text, subject} = mail;
