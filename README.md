@@ -1,14 +1,12 @@
 # @meanie/mail-composer
 
 [![npm version](https://img.shields.io/npm/v/@meanie/mail-composer.svg)](https://www.npmjs.com/package/@meanie/mail-composer)
-[![node dependencies](https://david-dm.org/meanie/mail-composer.svg)](https://david-dm.org/meanie/mail-composer)
 [![github issues](https://img.shields.io/github/issues/meanie/mail-composer.svg)](https://github.com/meanie/mail-composer/issues)
-[![codacy](https://img.shields.io/codacy/c0decdb116194cc9b1e7c1d53b6a8b3d.svg)](https://www.codacy.com/app/meanie/mail-composer)
-
 
 A utility to help you compose emails using the Handlebars templating engine, compatible with the [@sendgrid/mail](https://www.npmjs.com/package/@sendgrid/mail) library.
 
-![Meanie](https://raw.githubusercontent.com/meanie/meanie/master/meanie-logo-full.png)
+## 🚨 DEPRECATED 🚨 
+This package is deprecated and no longer maintained
 
 ## Installation
 
@@ -227,4 +225,4 @@ This package has been kindly sponsored by [Hello Club](https://helloclub.com?sou
 
 (MIT License)
 
-Copyright 2016-2020, Adam Reis
+Copyright 2016-2022, Adam Reis
